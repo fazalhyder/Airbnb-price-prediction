@@ -1,0 +1,594 @@
+---
+author: "fazal hyder"
+date: "`r Sys.Date()`"
+output: html_document
+---
+***
+***
+
+>#        Predicting Airbnb Prices in European cities
+
+Fazal Hyder Shaik, Nhan Nguyen, Siva Prasad Reddy Yeddula, Pavan Kumar Perumalla
+
+
+***
+***
+
+
+
+
+##### **Background**
+
+Airbnb, launched in 2008, has rapidly become a significant player in the global hospitality industry. In Europe, particularly, the platform has seen exponential growth due to the continent's rich cultural heritage, historical landmarks, and diverse travel destinations. Unlike traditional hotels that often have standardized pricing models, Airbnb hosts have flexibility in setting their prices. While several studies have looked into individual factors affecting Airbnb prices or focused on specific cities, there's a clear gap in comprehensive research covering the diverse European market as a whole. Moreover, as the Airbnb market evolves, older research may no longer be as relevant, necessitating updated studies and methodologies.
+
+##### **Research question**
+
+ This research aims to predict Airbnb prices by analyzing various factors such as room types, city center distance, metro distance, cleanliness, using regression models. Such models have the potential to enhance the efficiency of short-term rental market, inform travelers, and contribute to discussions on regulatory frameworks in urban environments and to what extent do room types, city center distance, metro distance, attraction index affect the prediction of Airbnb prices in European cities? We will also study different independent variables with prices as dependent variable. This method will help us quantify the relationship between these factors and Airbnb prices, providing insights into price determinants in European cities. For the research question related to predicting Airbnb prices a multiple regression model will be deployed with price as dependent variable and the research question concerning the difference in Airbnb prices based on room type, a hypothesis testing approach will be employed.
+ 
+##### **Data **
+This research will use dataset from Kaggle: “Determinants of Airbnb prices in European cities” including 19 variables such
+
+1. City : Name of the city
+
+2. Day :  describes weekday or weekend
+
+3. Price : price of the room in euros
+
+4. room type :  values are “private room” or “entire home” or “shared room”
+
+5. shared room : value is either true or false
+
+6. private room: value is either true or false
+
+7. person capacity : integer value describes the capacity of the room
+
+8. multiple room : value is either 0 or 1 meaning true or false
+
+9. business : dummy variable if the listing belongs to hosts with more than 4 offers
+
+10. cleanliness rating : integer value describing the cleanliness
+
+11.	guest satisfaction  over all rating
+
+12.	bedrooms : number of bedrooms 
+
+13.	city center: distance to city center from the hotel room
+
+14.	metro:  distance   to metropolitan
+
+15.	Attraction Index : attraction index of the listing location
+
+16.	Normalized attraction index : normalized attraction index (0-100)
+
+17.	restaurant index : restaurant index of the listing location
+
+18.	normalized restaurant index : normalized restaurant index (0-100)
+
+ The data has 41714 observations from Amsterdam, Athens, Barcelona, Berlin, Budapest, Lisbon, Paris, Rome, and Vienna in Europe.
+ 
+ ***
+ 
+ 
+##### **Literature Review**
+
+Airbnb has brought about a significant transformation in the worldwide hospitality sector, presenting travelers with a wide variety of lodging options and affording hosts the chance to earn income from their available spaces. This development has a deep imprint on the tourism landscape in Europe. With the expansion of Airbnb platform, there has been a growing interest in uncovering determinants that govern Airbnb pricing in European cities. This literature review aims to offer a comprehensive overview of the factors that influence Airbnb pricing, and the methodology used in this research.
+
+In order to determine the price of Airbnb, there are various factors such as location, customer review, star rating, and design, …  Gyódi and Nawaro (2021) conclude that location is one of the significant determinants of Airbnb pricing. According to this research, city-center distance and metro distance is also key drivers in location-based factor influencing the Airbnb prices. As an example, Ert et al. (2016) conducted research on Airbnb listings in Paris and noted that properties situated within easy walking distance of renowned landmarks like the Eiffel Tower could charge premiums of up to 30% in comparison to those located farther from these attractions. However, these researchs did not include a potential factor that could significantly affect Airbnb pricing is room types. Voltes-Dorta and Medina (2020b) concluded that room types such as entire home, private room or shared room is an important driver that affects Airbnb prices. Moreover, there is another significant factor that determines the price of Airbnb which is the attraction index.As evidence,  Research conducted in Greece, Melissourgos, Spyridon (2022) proved that proximity to attractive tourist destinations has a meaningful impact on price-setting. In order to test the validity of these determinants on Airbnb pricing, this research would focus on four factors : location-based such as city-center distance, metro distance, room types and attraction index. This research is inspired by previous research, so the methodology used is regression model. Bobrovskaya and Polbin (2022) believe that the regression model is one of the best methodologies for predicting price as dependent variables and independent variables.
+ 
+##### **References**
+ 
+[Ert, E., Fleischer, A., & Magen, N. (2016). Trust and reputation in the sharing economy: The role of personal photos in Airbnb. Tourism Management, 55, 62–73.](https://doi.org/10.1016/j.tourman.2016.01.013)
+
+[Gyódi, K., & Nawaro, Ł. (2021). Determinants of Airbnb prices in European cities: A spatial econometrics approach. Tourism Management, 86, 104319.](https://doi.org/10.1016/j.tourman.2021.104319)
+
+[Voltes-Dorta, A., & Medina, A. J. S. (2020b). Drivers of Airbnb prices according to property/room type, season and location: A regression approach. Journal of Hospitality and Tourism Management, 45, 266–275.](https://doi.org/10.1016/j.jhtm.2020.08.015)
+
+[Assessing the effect of proximity to tourist attraction sites on Airbnb listings’ nightly rates: Evidence from Athens, Greece  - Student Theses Faculty Spatial Sciences. (n.d.-b).](https://frw.studenttheses.ub.rug.nl/4031/)
+
+[Bobrovskaya, E., & Polbin, A. (2022). Determinants of short-term rental prices in the sharing economy: The case of Airbnb in Moscow. Applied Econometrics, 65(1), 5–28.](https://doi.org/10.22394/1993-7601-2022-65-5-28)
+
+
+
+***
+
+
+
+
+
+##### **Data Gathering**
+The  data set  used in our project is downloaded from [kaggle](https://www.kaggle.com/datasets/dipeshkhemani/airbnb-cleaned-europe-dataset). It is the merged data of 9 diffrent european cities which are Amsterdam, Athens, Barcelona, Berlin, Budapest, Lisbon, Paris, Rome and Vienna .  
+
+
+```{r}
+data <- read.csv("Aemf1.csv")
+```
+```{r}
+num_observations <- nrow(data)
+num_variables <- ncol(data)
+
+cat("There are ", num_observations,"observations ")
+cat("and there are ", num_variables, "variables in this dataset", "\n")
+
+```
+
+##### **Data Dictionary**
+ To give breif description about the variables in the dataset it follows as
+ 
+*	City : Name of the city
+
+*	Day :  describes weekday or weekend
+
+*	Price : price of the room in euros
+
+*	room type :  values are “private room” or “entire home” or “shared room”
+
+*	shared room : value is either true or false
+
+*	private room: value is either true or false
+
+*	person capacity : integer value describes the capacity of the room
+
+
+*	multiple room : value is either 0 or 1 meaning true or false
+
+*	business : dummy variable if the listing belongs to hosts with more than 4 offers
+
+
+*	cleanliness rating : integer value describing the cleanliness
+
+*	guest satisfaction  over all rating
+
+*	bedrooms : number of bedrooms , 0 for studios
+
+*	city center: distance to city center from the hotel room
+
+*	metro:  distance   to metropolitan
+
+*	Attraction Index : attraction index of the listing location
+
+*	Normalized attraction index : normalized attraction index (0-100)
+
+*	restaurant index : restaurant index of the listing location
+
+*	normalized restaurant index : normalized restaurant index (0-100)
+
+
+```{r}
+head(data)
+```
+ The datatype of the variables is 
+```{r}
+str(data)
+```
+##### **Cleaning and Preprocessing**
+For better analysis, We're going to remove any rows with missing values or duplicate values 
+```{r}
+
+data <- na.omit(data)
+```
+Now, lets check if the data set has any na values 
+```{r}
+# Check if there are any NA values in the dataset
+anyNA(data)
+
+```
+##### **Exploratory Data Analysis**
+
+
+```{r}
+library(skimr)
+summary <- skim(data)
+print(summary)
+
+
+```
+
+```{r}
+library(ggthemes)
+library(ggplot2)
+# City.Center..km. vs. Price with a smoothed line
+ggplot(data, aes(x = City.Center..km., y = Price)) +
+  geom_point(aes(color = Room.Type), alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  labs(title = "Price vs. Distance from City Center") +
+  theme_fivethirtyeight() +
+  scale_color_viridis_d()
+```
+
+ "Price vs Distance from City Center" with the consideration of Room Type ("Entire Home/Apt","Private Room","Shared Room"), we can observe that the price is higher if the Airbnb is located in the city center, and the price is lower if the Airbnb is located outside of the city center.Even if it is close to the city center, the visualization shows that an entire home/apt is more expensive than a private room or a shared room.
+
+```{r}
+# Metro.Distance..km. vs. Price
+ggplot(data, aes(x = Metro.Distance..km., y = Price)) +
+  geom_point(aes(color = Room.Type), alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  labs(title = "Price vs. Metro Distance") +
+  theme_fivethirtyeight() + scale_color_viridis_d()
+```
+
+We may draw the meaning that the price is higher if the Airbnb is close to the Metro and lower if the Airbnb is far from the Metro based on the data and visualization of "Price vs Metro Distance" with the consideration of Room Type ("Entire Home/Apt","Private Room","Shared Room").The graph shows that a Home/Apartment is more expensive than a private or shared room, despite being close to the Metro.After performing multiple regression, we discovered that the relationship between price and metro distance is not significant because the p-value is higher than 0.05. As a result, we are removing this variable because it does not demonstrate significance.
+
+```{r}
+# Normalised.Attraction.Index vs. Price
+ggplot(data, aes(x = Normalised.Attraction.Index, y = Price)) +
+  geom_point(aes(color = Room.Type), alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  labs(title = "Price vs. Normalised Attraction Index") +
+  theme_fivethirtyeight() + scale_color_viridis_d()
+```
+
+The scatter plot "Price vs Normalised Attraction Index", we conclude that Airbnb prices are actually affected by the Attraction Index. The price of Airbnb is higher with a higher Attraction Index, and even with a good Attraction Index, the prices are higher than those with a lower Attraction Index.
+
+
+
+```{r}
+# Room.Type vs. Price
+ggplot(data, aes(x = Room.Type, y = Price)) +
+  geom_boxplot(aes(fill = Room.Type)) +
+  labs(title = "Price Distribution by Room Type") +
+  theme_fivethirtyeight() +
+  scale_fill_viridis_d()
+```
+
+The above box plot depicts "Price vs Room Type" (i.e., "Home/Apt," "Private Room," "Shared Room"), we conclude that "Home/Apt" is obviously more expensive than Private Room or Shared Room, while Private Room is slightly more expensive than Shared Room and less expensive than "Home/Apt."As a result, Airbnb prices are actually influenced by the type of room.
+
+```{r}
+#Guest.Satisfaction vs. Price
+ggplot(data, aes(x = as.factor(Guest.Satisfaction), y = Price)) +
+  geom_boxplot(aes(fill = as.factor(Guest.Satisfaction))) +
+  labs(title = "Price Distribution by Guest Satisfaction") +
+  theme_fivethirtyeight() +
+  scale_fill_viridis_d()
+```
+
+Based on the graph of "Guest Satisfaction vs Price," we conclude that Airbnbs with 100% ratings are more popular and also more expensive in comparison to other ratings of Guest Satisfaction.Even from the graph, we can conclude that for Guess Satisfaction less than 60%, are quite low, while for ratings greater than 80%, prices are progressively growing.As a result, we  conclude that the element of Guest Satisfaction influences the prices.
+
+```{r}
+#Cleanliness.Rating vs. Price
+ggplot(data, aes(x = as.factor(Cleanliness.Rating), y = Price)) +
+  geom_boxplot(aes(fill = as.factor(Cleanliness.Rating))) +
+  labs(title = "Price Distribution by Cleanliness Rating") +
+  theme_fivethirtyeight() +
+  scale_fill_viridis_d()
+```
+
+The above box plot visualization of "Cleanliness Rating vs Price," the ratings range from 0 to 10, with "0" representing poorly maintained  and "10" representing thoroughly maintained and cleaned.Based on this graph, we can conclude that Airbnb's with a rating of "10" are more expensive than those with ratings ranging from 0 to 9,by dropping the cleanliness ratings with 9,8,7.........0, the costs are gradually reducing, indicating that cleanliness ratings are influencing Airbnb prices.
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+p <- ggplot(data, aes(y = Price)) + 
+  theme_minimal() + 
+  theme(legend.position = "none")
+
+# For City.Center..km.
+p1 <- p + 
+  geom_point(aes(x = City.Center..km., color = Room.Type), alpha = 0.6) + 
+  labs(title = "Distance from City Center", x = "City.Center..km.") + 
+  theme(plot.title = element_text(size = 10, hjust = 0.5))
+
+# For Metro.Distance..km.
+p2 <- p + 
+  geom_point(aes(x = Metro.Distance..km., color = Room.Type), alpha = 0.6) + 
+  labs(title = "Metro Distance", x = "Metro.Distance..km.") + 
+  theme(plot.title = element_text(size = 10, hjust = 0.5))
+
+# For Normalised.Attraction.Index
+p3 <- p + 
+  geom_point(aes(x = Normalised.Attraction.Index, color = Room.Type), alpha = 0.6) + 
+  labs(title = "Normalised Attraction Index", x = "Normalised.Attraction.Index") + 
+  theme(plot.title = element_text(size = 10, hjust = 0.5))
+
+# Arrange the plots in a grid with titles and some spacing
+grid.arrange(p1, p2, p3, 
+             ncol = 3, 
+             top = "Scatter Plots of Independent Variables vs. Price",
+             bottom = "Colored by Room Type")
+
+```
+
+Based on the graphs of "Scatter Plots of Independent Variables vs. Price," we conclude that the independent variables "Distance from city center","Metro Distance","Normalised Attraction Index" are influencing the dependent variable "Price".The visualization shows that "Distance from City Center vs Price", The closer to the city center the higher the prices of Airbnb compared to outside of the city center, same with the "Metro Distance", but after running multiple regressions we are excluding the Metro Distance as it gives similar meaning as city center , while with the "Normalised Attraction Index" the higher the Attraction index the higher the prices of Airbnb.We conclude that the independent variables have an impact on the dependent variable "Price"  
+
+ **Econometric Model and Technique:**
+
+our main goal is to predict the price (a continuous dependent variable), a Multiple Linear Regression (MLR) model is the most straightforward choice.
+
+Why Multiple Linear Regression?
+
+Nature of Dependent Variable: The target variable, 'Price', is continuous.
+Interpretability: MLR models are easy to interpret, making it clear how each independent variable affects the predicted price.
+Relationship Exploration: MLR can help establish a linear relationship between independent variables and the dependent variable.
+
+##### **Assumptions:**
+For MLR, there are key assumptions:
+
+Linearity: There is a linear relationship between the dependent variables and the independent variables.
+Independence: Observations are independent of each other.
+Homoscedasticity: The variance of the errors is constant across all levels of the independent variables.
+No Multicollinearity: Independent variables are not too highly correlated.
+Normality: For a larger sample size, the errors (or residuals) follow a normal distribution. This isn't a strict assumption for MLR, especially with larger datasets, but it's important for hypothesis testing.
+
+##### **Running multiple regression analysis to choose significant variables for predicting model of price**
+```{r,warnings=FALSE}
+library(stargazer)
+multi_regress <- lm(data$Price ~ data$City + data$Day + data$Room.Type  + data$Person.Capacity + data$Superhost + data$Multiple.Rooms + data$Business + data$Cleanliness.Rating + data$Guest.Satisfaction + data$Bedrooms + data$City.Center..km. + data$Metro.Distance..km. +data$Normalised.Attraction.Index + data$Normalised.Restraunt.Index +data$Attraction.Index  + data$Restraunt.Index)
+stargazer(multi_regress, title="Summary of multi_regress", type="text", digits=4)
+```
+
+##### Result:
+
+Based on multiple regression model output, we will include all variables that have lower p-value ( below 0.05) which are considered statistically significant predictors of the price and exclude  high p-value ( over 0.05) variables . Based on the model output, we can observe that there are significant variables: City (with different categories for each city) is statistically significant. This suggests that the city where the listing is located has a significant impact on the price.
+Day is statistically significant, indicating that the day of the week (weekend vs. weekday) affects the price, Room.Type is statistically significant, suggesting that the type of room (private room or shared room) is a significant predictor of price. Person.Capacity is statistically significant, implying that the room's capacity is a significant factor in determining the price. Multiple.Rooms and Business are statistically significant, indicating that listings with multiple rooms and listings from businesses tend to have different price levels. Beside that, Cleanliness.Rating and Guest.Satisfaction are statistically significant, showing that higher cleanliness ratings and guest satisfaction ratings are associated with higher prices . Bedrooms is statistically significant, suggesting that the number of bedrooms in the listing influences the price.City.Center..km. and Attraction.Index are statistically significant, indicating that proximity to the city center and attraction index affect the price. Based on the result, there are three variables with high p-value (over 0.05) are Superhost, Metro.Distance and Restaurant Index. So, we decided to exclude those variables because it suggests that these variables are not statistically significant on predicting Aribnb Prices. 
+
+##### **Reducing data dimension**
+```{r} 
+data <- data[, -c(16, 18)]
+data <- data[, -c(8)]
+data <- data[, -c(14)]
+
+
+
+
+head(data)
+
+```
+
+
+##### **Choosing significant variables**
+
+By applying mutilple regression model above, we excluded those variables which are not statistically significant for predicting prices such as Superhost, Metro.Distance..km., Restaurant.Index and Attraction.Index In addition, the pairs of variables : "Atrraction.Index vs Normalised.Attraction.Index" and "Restaurant.Index vs Normalised.Restaurant.Index" which are highly correlated with each other. It could lead to multicollinearity between those pairs of variables, which could overlap information and result in unstable coefficient estimates and reduced interpretability of model. So, we decided to exclude Atraction.Index and Restaurant.Index from our model.
+
+
+##### **Regression Model**
+In comimgs days in our research we will run the regression model with significant variables such as
+
+###### Dependent Variable:
+
+Price: The cost of  the Airbnb. This is what we aim to predict.
+
+###### Independent Variables:
+
+City: each of city in Europe can result in different levels of Airbnb prices.
+
+Day: weekend vs weekday also a factor affecting to price
+
+Room.Type: Categorial variable indicating type of room (e.g., Entire home/apt, Private room). Entire homes/apartments might typically cost more than private rooms or shared spaces.
+
+Person.Capacity: Higher room capacity may lead to higher price.
+
+Muitilple.Rooms: Airbnb with multiple rooms may leads to higher demand and higher price
+
+Business: A business with have more than 4 offers which may lead to higher prices.
+
+City.Center..km.: Distance from the city center. Expectation is that places closer to the city might be more expensive due to higher demand.
+
+Bedrooms : The number of bedrooms which are rented by single person will influence the price of rooms .
+
+Normalised.Attraction.Index: Indicates how attractive an area is, possibly based on tourist sites or amenities. A higher attraction index might correlate with higher prices.
+
+Normalised.Restaurant.Index :Indicates how close a restuarant  is  to the Airbnb , A higher resturant  index might correlate with higher prices.
+
+Guest.Satisfaction: Overall satisfaction of guests who stayed at the Airbnb. Higher satisfaction might correlate with higher prices if hosts adjust their prices based on positive feedback.
+
+Cleanliness.Rating: Indicates how clean the Airbnb is. Like guest satisfaction, cleaner places might command higher prices.
+ 
+
+
+
+
+
+
+
+##### **How each city and room types influence the Airbnb prices - OLS regression model**
+
+The Ordinary Least Squares (OLS) regression model is a powerful analytic tool used to explore and quantify the intricate relationships between various independent variables and a dependent variable. In the context of the short-term accommodation market, such as Airbnb, understanding the factors that influence pricing is of paramount importance for both hosts and travelers. This study utilizes the OLS regression model to investigate the multifaceted dynamics that impact Airbnb prices in European cities. With a diverse range of independent variables, including city, room type, capacity, business involvement, cleanliness ratings, guest satisfaction, and more, this analysis seeks to uncover the key drivers behind pricing variations. The model's coefficients provided estimates of the magnitude and direction of these effects, while highly significant p-values underscored the statistical significance of the findings. 
+
+The purpose of an OLS model is to identify the linear equation that minimizes the sum of the squared differences between the observed and predicted values of the dependent variable. This linear equation is:
+
+$$
+\text{Price} = \beta_0 + \beta_1 \times \text{city} + \beta_2 \times \text{day} + \beta_3 \times \text{Room.Type} + \beta_4 \times \text{Person.Capacity} + \\\beta_5 \times \text{Multiple.Rooms} + \beta_6 \times \text{Business} + \beta_7 \times \text{Bedrooms} +\beta_8 \times \text{City.Center..km.} + \beta_9 \times \text{Normalised.Attraction.Index} + \\\beta_{10} \times \text{Normalised.Restaurant.Index} + \beta_{11} \times \text{Guest.Satisfaction} +\beta_{12} \times \text{Cleanliness.Rating} + \epsilon
+$$
+```{r, warnings=FALSE}
+library(stargazer)
+# Fit an OLS regression model
+ols_model <- lm(data$Price ~ data$City + data$Day + data$Room.Type  + data$Person.Capacity  + data$Multiple.Rooms + data$Business + data$Cleanliness.Rating + data$Guest.Satisfaction + data$Bedrooms + data$City.Center..km. )
+
+#  summary of the regression model
+stargazer(ols_model, title="Summary of OLS Model",align = TRUE, type="text", single.row=TRUE)
+
+```
+From the output of OLS model, it indicated some key insights into relationship between independent variables and price fluctuation.
+
+Given that the price is in euros, this provides added context to our interpretation. Here's a refined interpretation of the OLS summary, considering the prices are in euros:
+
+## Interpretation:
+
+1. **City Variables**: These are categorical variables with one city (likely 'Amsterdam' based on the data shown) being the reference category. Negative coefficients indicate that, on average, listings in these cities are cheaper than the reference category. For instance, listings in `Athens` are, on average, about €504.54 cheaper than those in the reference city, holding all else constant. The significance stars (`***`) indicate that this effect is statistically significant.
+
+2. **DayWeekend**: Listings are, on average, €6.90 more expensive during the weekend compared to weekdays, holding other factors constant.
+
+3. **Room.Type**: Compared to a possible reference type (maybe entire home/apt), private rooms are cheaper by €93.70, and shared rooms are cheaper by €210.29, on average.
+
+4. **Person.Capacity**: For every additional person that a listing can accommodate, its price increases by €22.56, on average.
+
+5. **Multiple.Rooms**: Listings with multiple rooms are, on average, €13.75 more expensive than those without.
+
+6. **Business**: Listings suitable for business travelers are, on average, €41.73 more expensive.
+
+7. **Cleanliness.Rating** and **Guest.Satisfaction**: These variables show that for each unit increase in cleanliness rating and guest satisfaction, the price increases by €6.54 and €0.73, respectively.
+
+8. **Bedrooms**: Each additional bedroom increases the listing price by €69.53, on average.
+
+9. **City.Center..km.**: For every additional kilometer from the city center, the listing price decreases by €5.76.
+
+10. **Metro.Distance..km.**: This variable is not statistically significant, meaning it doesn't provide useful information about the listing price in this model.
+
+11. **Attraction.Index**: For each unit increase in the attraction index, the price increases by €0.14, on average.
+
+12. **R-squared**: About 25.48% of the variation in the listing prices (in euros) can be explained by the variables included in the model. This suggests there might be other factors affecting the price not captured in this model.
+Other Factors: Several additional factors were found to influence prices. Higher room capacity, represented by the "Person Capacity" variable, contributed to increased prices, with each additional person capacity unit adding to the price . Interestingly, listings managed by superhosts did not exhibit a significant effect on prices. However, Airbnb listings with multiple rooms or belonging to businesses commanded higher prices, suggesting that larger and professionally managed accommodations tend to charge more. Additionally, factors such as cleanliness ratings, guest satisfaction, the number of bedrooms, proximity to the city center, and attraction indexes were positively correlated with prices.
+lets check if the model has any collinearity among the independet variables
+```{r, warnings=FALSE}
+library(car)
+vif_values <- vif(ols_model)
+
+print(vif_values)
+
+# Identify variables with high multicollinearity
+high_vif_vars <- names(vif_values)[vif_values > 5]
+
+
+```
+As there is no multicolinearity and all the variables which we are using is significant in the above model lets make a predictive model using coeffcients of independent variables to predicty the dependent varaible "price".
+```{r}
+predict_price <- function(city, day, room_type, person_capacity, multiple_rooms, business, cleanliness_rating, guest_satisfaction, bedrooms, city_center_km) {
+  # Coefficients from the summary
+  coefficients <- c(
+    CityAthens = -504.5356,
+    CityBarcelona = -251.3794,
+    CityBerlin = -264.6802,
+    CityBudapest = -458.4483,
+    CityLisbon = -388.2694,
+    CityParis = -182.2039,
+    CityRome = -393.5043,
+    CityVienna = -360.2700,
+    DayWeekend = ifelse(day == "Weekend", 6.9947, 0),
+    RoomTypePrivateRoom = ifelse(room_type == "Private room", -93.6980, 0),
+    RoomTypeSharedRoom = ifelse(room_type == "Shared room", -210.2931, 0),
+    PersonCapacity = person_capacity * 22.5587,
+    MultipleRooms = multiple_rooms * 16.9572,
+    Business = business * 48.8438,
+    CleanlinessRating = cleanliness_rating * 6.2290,
+    GuestSatisfaction = guest_satisfaction * 0.8073,
+    Bedrooms = bedrooms * 69.5303,
+    CityCenterKm = city_center_km * -12.8030,
+    Constant = 351.7186
+  )
+  
+  # Predicted price based on input values
+  predicted_price <- sum(coefficients[c(paste0("City", city), "DayWeekend", "RoomTypePrivateRoom", "RoomTypeSharedRoom", "PersonCapacity", "MultipleRooms", "Business", "CleanlinessRating", "GuestSatisfaction", "Bedrooms", "CityCenterKm", "Constant")])
+  
+  return(predicted_price)
+}
+
+# Example usage
+predicted_price_value <- predict_price(city = "Barcelona", day = "Weekend", room_type = "Private room", person_capacity = 2, multiple_rooms = 3, business = 0, cleanliness_rating = 8, guest_satisfaction = 90, bedrooms = 1, city_center_km = 5)
+print(predicted_price_value)
+```
+
+
+
+In summary, the OLS regression model provided valuable insights into the intricate landscape of Airbnb pricing in European cities. It underscored the pivotal role of factors like city choice, room type, day of the week, room capacity, and various quality-related attributes in shaping Airbnb prices. These findings empower hosts and travelers alike to make informed decisions in a competitive and dynamic short-term accommodation market. 
+but it just explains only about 25.48% of the variation in the data set .
+Now let us factorise the data to run an different model and compare these two models 
+
+##### factorising data
+
+```{r}
+data$City <- as.factor(data$City)
+data$Day <- as.factor(data$Day)
+data$Room.Type <- as.factor(data$Room.Type)
+
+```
+This takes the 'City' column from the 'data' dataset and converts it into a factor variable. In plain words, if the 'City' column has names of cities like 'Paris', 'London', 'New York', etc., rather than treating them as just text or strings, it's categorizing them into distinct levels or groups. This is useful for analysis, as it tells the statistical model that 'City' is not just any text but distinct categories.Similarly, this converts the 'Day' column from the 'data' dataset into a factor variable. So if you had values like 'Monday', 'Tuesday', etc., they'd now be treated as separate categories, not just random text.This does the same thing for the 'Room.Type' column. If you had values like 'Single Room', 'Double Room', etc., they would now be categorized appropriately.
+
+In essence, these lines are preparing the dataset for analysis by ensuring that certain variables are treated as categorical variables and not just plain text.
+##### Random forest regression
+
+To understand what we doing here lets break down the code for better understanding ."Here randomForest(...)" This tells R to use the Random Forest algorithm to analyze your data."Price ~ City + Day + ..." This is a formula that specifies what you're trying to predict and what data you're using to predict it. Specifically, you're trying to predict the Price based on variables like City, Day, Room.Type, etc."data=data" This tells the function to find the variables you mentioned (like Price, City, etc.) in the dataset named "data"."ntree=100" This specifies that the random forest should be made up of 100 trees. In general, more trees usually provide more robust predictions, but also require more computational power and time.
+In simpler terms, the code is setting up everything needed to analyze your data using the Random Forest algorithm, aiming to predict Price based on various factors like City, Day, and Room.Type (among others), and then actually carrying out that analysis. Now , to produce an analysis which is exactly reproduceable we will set the seeds.The set.seed function sets a starting point for the generation of random numbers. Why do this? The random forest algorithm involves randomness (like bootstrapping samples and selecting features). By setting a seed, you ensure that anyone else who runs this code will get the exact same results as you, making your analysis reproducible.
+```{r,echo=FALSE,warnings=FALSE}
+
+library(randomForest)
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Fitting the Random Forest model
+rf_model <- randomForest(Price ~ City + Day + Room.Type + Person.Capacity + Multiple.Rooms + Business + Cleanliness.Rating + Guest.Satisfaction + Bedrooms + City.Center..km., data=data, ntree=100)
+
+```
+###### Model Details:
+
+Type of random forest: regression: The Random Forest algorithm can be used for classification (predicting categories) or regression (predicting numerical values). In this case, the model is being used for regression, which means it's trying to predict a numerical value (likely the Price).
+Number of trees: 100: This indicates that the model used 100 decision trees to make its predictions. Typically, more trees can capture more complexities in the data, but there's a diminishing return, and sometimes more trees can overfit the model.
+No. of variables tried at each split: 3: At each decision point (or "node") in each tree, the model randomly selected 3 of the predictor variables to consider for making a split.
+Model Performance Metrics:
+
+Mean of squared residuals: 39783.82: Residuals are the differences between the observed values and the values predicted by the model. The squared residuals quantify the error in the model's predictions. Averaging these gives an overall measure of the model's prediction error. In this case, the average squared difference between the actual and predicted Price is 39783.82. The smaller this value, the better the model's predictions.'% Var explained: 49.04: This is analogous to the R-squared value in linear regression. It tells us the proportion of the variance in the Price that's explained by the predictor variables in the model. In this case, about 49.04% of the variability in Price is explained by the model. This means the model captures almost half of the information relevant to predicting Price, but there's still more than half that it doesn't capture.
+In simpler terms: The model uses 100 trees and considers 3 predictors at each decision point in the trees. It does a decent job, capturing about half of the factors that influence Price. However, there's still substantial room for improvement, as indicated by the mean squared residuals and the percent of variance explained.
+
+We used 100 "trees" or individual models combined to form our Random Forest. Think of this as getting opinions from 100 experts and combining their insights.At every decision or split in each of these trees, we only considered 3 variables out of all the available ones to decide which way to go.
+
+Our average error, when we predict the price and compare it to the actual price, is squared and then averaged out to be around 39,783.82. This is a measure of how off our predictions can be. so according to us its so off so we gonna do one more regression which will be ordinary least square regressions 
+Our model can explain about 49% of the changes in the price using the factors we provided. 
+
+
+```{r}
+print(rf_model)
+importance(rf_model)  # Display variable importance
+
+```
+
+**IncNodePurity** 
+
+ This tells us how important each factor (like City, Day, Room.Type, etc.) is in predicting the price. A higher number means it has a larger role in the decision-making process of our model.
+For example, City.Center..km. has the highest value, meaning the distance from the city center is a significant factor in determining price. On the other hand, Day has a much lower value, suggesting that whether it's a weekend or a weekday doesn't play as big a role.
+In short, we built a model to predict property prices using several factors. It gives reasonably good insights but isn't perfect. The distance from the city center, the number of bedrooms, and guest satisfaction seem to be big players in deciding the price, while the day of the listing isn't as influential.
+```{r}
+# Let's predict on the first 10 rows of the dataset as an example
+new_data <- data[1:10,]  
+predictions <- predict(rf_model, new_data)
+
+# Print the predictions
+print(predictions)
+
+```
+Let's summarize the results of both the Linear Regression model and the Random Forest Regression .
+
+#### Random Forest Regression:
+
+**Model Type:**
+This is a non-linear model, which means it doesn't assume a straight-line relationship between variables. It's more flexible and can capture complex patterns in data.
+
+**Trees Used:** 100 individual decision trees were combined to make predictions.
+
+**Mean of squared residuals:** 39,783.82. This value indicates how far off our predictions might be from the actual prices, on average.
+
+**% Var explained:** 49.04%. This means the model can explain about 49% of the variability in the property prices using the given features. The rest is due to factors not included in the model or inherent randomness.
+
+#### Linear Regression (OLS Model):
+
+**Model Type:** This is a linear model, which means it assumes a straight-line relationship between the variables. It's simpler and interprets relationships between each predictor and the outcome.
+
+**Coefficients:** These values indicate how much the price will change with a one-unit change in the predictor, keeping everything else constant. For instance, for every unit increase in "Bedrooms", the price might increase by a certain amount in euros.
+
+**Adjusted R^2:** 0.2464. This means the model explains about 24.64% of the variability in property prices using the given features. It's a measure of how well our model fits the data.
+
+**F Statistic:** Indicates that the predictors used in the model collectively have a significant effect on the outcome.
+
+#### Comparison:
+
+**Complexity:** The Random Forest model is more complex and can capture intricate patterns, while the Linear Regression model is straightforward and based on linear relationships.
+
+**Performance:** The Random Forest explained 49% of the variability in prices, while the Linear Regression explained about 24.64%. This suggests that the Random Forest might be better suited for this particular dataset, given its ability to account for more variability.
+
+In summary, The Linear Regression model provides direct insights into how each factor influences the price, making it more interpretable. The Random Forest, while being a better performer, doesn't offer the same level of clear interpretation for each variable.while the Random Forest seems to perform better in terms of prediction accuracy, the Linear Regression offers clearer insights into the relationships between predictors and the outcome. The choice between them would depend on the specific needs: whether we prioritize prediction accuracy or interpretability.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
